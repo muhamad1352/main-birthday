@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Battoty!</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+    <style>
+html { scroll-behavior: smooth; }
+        body { margin: 0; background: linear-gradient(45deg, #1a1a2e, #16213e); }
+        .main-content {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100vw;
+        }
+        .home-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        .scroll-progress { position: fixed; top: 0; left: 0; width: 100%; height: 6px; background: linear-gradient(to right, #ff4b6e, #ff9a9e); transform-origin: 0 50%; transform: scaleX(0); z-index: 1001; }
+        .nav-menu { position: fixed; top: 20px; right: 20px; z-index: 1000; display: flex; gap: 10px; }
+        .nav-btn { background: rgba(255, 75, 110, 0.9); color: white; padding: 10px 20px; border-radius: 25px; text-decoration: none; font-size: 0.9em; transition: transform 0.3s, background 0.3s; }
+        .nav-btn:hover { transform: translateY(-3px); background: rgba(255, 75, 110, 1); }
+        .elements-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 150vh;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+        .birthday-title {
+            font-size: 4em;
+            color: white;
+            font-style: italic;
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(255,255,255,0.5);
+            font-family: 'Dancing Script', cursive;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            width: 100%;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+        .birthday-title.visible {
+            opacity: 1;
+        }
+        @media (max-width: 600px) {
+            .birthday-title { font-size: 2em; }
+        }
+        .title-letter { opacity: 0; animation: letterAppear 0.5s ease-out forwards; }
+        @keyframes letterAppear { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+        .balloon { position: absolute; animation: floatUp 6s ease-in infinite; bottom: -50px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.3)); }
+        .balloon.small { font-size: 30px; }
+        .balloon.medium { font-size: 45px; }
+        .balloon.large { font-size: 60px; }
+        .balloon.pink { color: #ff69b4; }
+        .balloon.red { color: #ff0000; }
+        .balloon.blue { color: #1e90ff; }
+        @keyframes floatUp { 0% { transform: translateY(100vh) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 50% { transform: translateY(50vh) rotate(5deg); } 100% { transform: translateY(-100vh) rotate(-5deg); opacity: 0; } }
+        .firework { position: absolute; width: 5px; height: 5px; border-radius: 50%; animation: firework 1s ease-out forwards; }
+        @keyframes firework { 0% { transform: scale(0); opacity: 1; } 100% { transform: scale(3); opacity: 0; } }
+        .heart, .flower { position: absolute; font-size: 24px; animation: floatUp 4s ease-in infinite; }
+        .heart { color: #ff0000; }
+        .click-to-start {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            cursor: pointer;
+        }
+        .click-to-start p {
+            color: white;
+            font-size: 2em;
+            font-family: 'Dancing Script', cursive;
+            text-align: center;
+            animation: pulse 1.5s infinite;
+        }
+        .click-to-start.hidden {
+            display: none;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .password-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(170deg, rgba(242, 180, 231, 1.0), rgba(206, 25, 106, 1.0));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+        .password-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        .password-image {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .password-input {
+            padding: 10px;
+            margin: 10px 0;
+            width: 200px;
+            border: 2px solid #ff4b6e;
+            border-radius: 25px;
+            text-align: center;
+            font-size: 1.1em;
+            letter-spacing: 2px;
+        }
+        .password-input::placeholder {
+            letter-spacing: normal;
+        }
+        .password-button {
+            background: #ff4b6e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: transform 0.3s;
+        }
+        .password-button:hover {
+            transform: scale(1.05);
+        }
+        .password-error {
+            color: #ff4b6e;
+            margin-top: 10px;
+            display: none;
+        }
+        /* Hide main content initially */
+        .main-content { display: none; }
+        .main-content.visible { display: block; }
+        .meteor {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1),
+                        0 0 0 8px rgba(255, 255, 255, 0.1),
+                        0 0 20px rgba(255, 255, 255, 1);
+            animation: meteor 2s linear infinite;
+            top: 0;
+            left: 0;
+            z-index: 2;
+        }
+        .meteor.center {
+            animation-name: meteorCenter;
+        }
+        .meteor::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 150px;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 1), transparent);
+        }
+        @keyframes meteor {
+            0% {
+                transform: rotate(30deg) translateX(0) translateY(0);
+                opacity: 1;
+            }
+            70% {
+                opacity: 1;
+            }
+            100% {
+                transform: rotate(30deg) translateX(100vw) translateY(50vh);
+                opacity: 0;
+            }
+        }
+        @keyframes meteorCenter {
+            0% {
+                transform: rotate(0deg) translateX(0) translateY(0);
+                opacity: 1;
+            }
+            70% {
+                opacity: 1;
+            }
+            100% {
+                transform: rotate(0deg) translateX(0) translateY(100vh);
+                opacity: 0;
+            }
+        }
+        /* Timer Section Styles */
+        #together-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+        }
+        .timer-card {
+            background: #fff;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            border-radius: 20px;
+            max-width: 800px;
+            width: 90vw;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .timer-question {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.2em;
+            color: #ff4b6e;
+            margin-bottom: 20px;
+        }
+        .timer-image {
+            width: 220px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .timer-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 18px;
+            margin: 20px 0 10px 0;
+        }
+        .timer-unit {
+            background: #ff4b6e;
+            padding: 18px 12px;
+            border-radius: 10px;
+            min-width: 80px;
+            margin: 0 2px;
+        }
+        .timer-number {
+            font-size: 2em;
+            color: White;
+            font-weight: bold;
+        }
+        .timer-label {
+            font-size: 1em;
+            color: #fff;
+        }
+        .timer-start-date {
+            color: #ff4b6e;
+            font-size: 1.1em;
+            margin-top: 18px;
+            font-family: 'Dancing Script', cursive;
+        }
+        @media (max-width: 600px) {
+            .timer-image { width: 220px;  }
+            .timer-unit { min-width: 60px; padding: 10px 4px; }
+        }
+        /* Netflix Gallery Styles */
+        #gallery-section {
+            min-height: 100vh;
+            background: #111;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: flex-start;
+            padding: 0;
+        }
+        .netflix-hero {
+            position: relative;
+            width: 100vw;
+            height: 60vh;
+            min-height: 340px;
+            background: #222;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+        }
+        .hero-img {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100%;
+            object-fit: cover;
+            object-position: center-bottom;
+            filter: brightness(0.6);
+            z-index: 1;
+            transition: none;
+        }
+        .hero-overlay {
+            position: relative;
+            z-index: 2;
+            padding: 40px 60px;
+            background: linear-gradient(90deg, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0.1) 100%);
+            max-width: 700px;
+        }
+        .hero-label {
+            background: #e50914;
+            color: #fff;
+            font-size: 1em;
+            font-weight: bold;
+            padding: 4px 14px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            letter-spacing: 2px;
+            display: inline-block;
+        }
+        .hero-title {
+            font-size: 2.8em;
+            font-family: 'Dancing Script', cursive;
+            margin: 0 0 18px 0;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .hero-desc {
+            font-size: 1.2em;
+            max-width: 600px;
+            margin-bottom: 30px;
+            color: #fff;
+            opacity: 0.95;
+        }
+        .hero-btn {
+            background: #fff;
+            color: #111;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 5px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .hero-btn:hover {
+            background: #e50914;
+            color: #fff;
+        }
+        .netflix-row {
+            position: relative;
+            margin-top: -60px;
+            padding: 60px 0 40px 0;
+            background: linear-gradient(to top, #111 80%, transparent 100%);
+        }
+        .netflix-scroll-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            font-size: 2em;
+            z-index: 2;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .netflix-scroll-arrow:hover {
+            background: #e50914;
+        }
+        .netflix-scroll-arrow.left { left: 10px; }
+        .netflix-scroll-arrow.right { right: 10px; }
+        .netflix-thumbnails {
+            display: flex;
+            gap: 18px;
+            align-items: flex-end;
+            min-height: 120px;
+            padding: 0 40px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .netflix-thumbnails::-webkit-scrollbar {
+            display: none;
+        }
+        .netflix-thumb {
+            flex: 0 0 220px;
+            height: 130px;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            transition: transform 0.3s, box-shadow 0.3s;
+            background: #222;
+        }
+        .netflix-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: filter 0.3s;
+        }
+        .netflix-thumb:hover {
+            transform: scale(1.18) translateY(-10px);
+            z-index: 10;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+        }
+        .netflix-thumb .thumb-overlay {
+            position: absolute;
+            left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: #fff;
+            padding: 10px 12px 8px 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 1em;
+        }
+        .netflix-thumb:hover .thumb-overlay {
+            opacity: 1;
+        }
+        .thumb-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+        .netflix-lightbox {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            flex-direction: column;
+        }
+        .netflix-lightbox.active { display: flex; }
+        .netflix-lightbox-img {
+            max-width: 90vw;
+            max-height: 80vh;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            margin-bottom: 24px;
+            transition: opacity 0.5s;
+        }
+        .netflix-lightbox-close {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            color: #fff;
+            font-size: 2.5em;
+            cursor: pointer;
+            z-index: 10001;
+            background: rgba(255,75,110,0.7);
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .netflix-lightbox-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #fff;
+            background: rgba(0,0,0,0.7);
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            font-size: 2em;
+            cursor: pointer;
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .netflix-lightbox-arrow.left { left: 30px; }
+        .netflix-lightbox-arrow.right { right: 30px; }
+        @media (max-width: 900px) {
+            .hero-overlay { padding: 30px 10px; }
+            .hero-title { font-size: 2em; }
+            .hero-desc { font-size: 1em; }
+            .netflix-thumb { flex-basis: 120px; height: 70px; }
+            .netflix-thumbnails { padding: 0 10px; }
+        }
+        /* Disney+ Video Section Styles */
+        #video-section {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .disney-bg-blur {
+            position: absolute;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 0;
+            filter: blur(40px) brightness(0.7);
+            object-fit: cover;
+            pointer-events: none;
+            opacity: 0.5;
+            transition: opacity 0.5s;
+        }
+        .disney-spotlight {
+            position: relative;
+            margin: 80px 0 40px 0;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .spotlight-card {
+            position: relative;
+            width: 480px;
+            max-width: 90vw;
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: 0 8px 40px 0 rgba(0,0,0,0.5), 0 0 32px 8px #26d0ce;
+            background: rgba(255,255,255,0.05);
+            transition: box-shadow 0.4s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .spotlight-card video {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            border-radius: 32px;
+            background: #111;
+        }
+        .spotlight-play-btn {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255,255,255,0.85);
+            color: #1a2980;
+            border: none;
+            border-radius: 50%;
+            width: 72px;
+            height: 72px;
+            font-size: 2.5em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+            transition: background 0.2s, color 0.2s;
+            z-index: 2;
+            opacity: 0.92;
+        }
+        .spotlight-play-btn:hover {
+            background: #26d0ce;
+            color: #fff;
+        }
+        .spotlight-info {
+            margin-top: 24px;
+            text-align: center;
+            z-index: 2;
+        }
+        .spotlight-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #fff;
+            text-shadow: 0 2px 12px #1a2980;
+        }
+        .spotlight-desc {
+            font-size: 1.1em;
+            color: #e0f7fa;
+            margin-bottom: 10px;
+        }
+        .disney-carousel-row {
+            position: relative;
+            width: 100vw;
+            padding: 30px 0 40px 0;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .disney-carousel {
+            display: flex;
+            gap: 18px;
+            align-items: flex-end;
+            min-height: 120px;
+            padding: 0 40px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            width: 100vw;
+        }
+        .disney-carousel::-webkit-scrollbar { display: none; }
+        .disney-thumb {
+            flex: 0 0 180px;
+            height: 100px;
+            border-radius: 18px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            background: #222;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .disney-thumb video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 18px;
+            background: #111;
+        }
+        .disney-thumb:hover {
+            transform: scale(1.12) translateY(-8px);
+            z-index: 10;
+            box-shadow: 0 8px 32px #26d0ce99;
+        }
+        .disney-thumb .thumb-overlay {
+            position: absolute;
+            left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            color: #fff;
+            padding: 8px 10px 6px 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 1em;
+        }
+        .disney-thumb:hover .thumb-overlay {
+                opacity: 1;
+            }
+        @media (max-width: 900px) {
+            .spotlight-card { width: 98vw; }
+            .spotlight-card video { height: 160px; }
+            .disney-carousel { padding: 0 10px; }
+            .disney-thumb { flex-basis: 90px; height: 60px; }
+        }
+        /* Text Animation Section Styles */
+        #text-section {
+            min-height: 100vh;
+            background: #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        #textCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .floating-heart {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 20px;
+            animation: float-up 4s linear infinite;
+            opacity: 0;
+        }
+        @keyframes float-up {
+            0% {
+                transform: translateY(100vh) scale(0.5);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-100px) scale(1.5);
+                opacity: 0;
+            }
+        }
+        #cake-section {
+            background: #ff4b6e;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .cake-card {
+            background: transparent;
+            border-radius: 24px;
+            box-shadow: none;
+            padding: 0;
+            max-width: 500px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 40px 0;
+        }
+        .cake-title {
+            display: none;
+        }
+        .cake-date {
+            background: #fff;
+            color: #ff4b6e;
+            font-size: 2em;
+            font-weight: 700;
+            border-radius: 8px;
+            padding: 6px 32px;
+            margin-bottom: 18px;
+            margin-top: 32px;
+            box-shadow: 0 2px 8px #ffb6c1;
+            text-align: center;
+        }
+        .cake-message {
+            background: #fff;
+            color: #ff4b6e;
+            font-size: 1.2em;
+            border-radius: 8px;
+            padding: 10px 24px;
+            margin-bottom: 36px;
+            text-align: center;
+            box-shadow: 0 2px 8px #ffb6c1;
+            font-weight: 500;
+        }
+        .cake-btn {
+            background: #fff;
+            color: #ff4b6e;
+            font-size: 1.3em;
+            font-family: 'Poppins', sans-serif;
+            border: none;
+            border-radius: 22px;
+            padding: 18px 38px;
+            margin-top: 18px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px #ffb6c1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .cake-btn:hover {
+            background: #ffe6ee;
+            color: #ff2e5c;
+            transform: translateY(-2px) scale(1.04);
+        }
+    </style>
+</head>
+<body>
+    <!-- Password Protection Overlay -->
+    <div class="password-overlay" id="passwordOverlay">
+        <div class="password-container">
+            <img src="media/pass-image.JPG" alt="Special Image" class="password-image">
+            <h2>What is the date of first time we talk?</h2>
+            <p>Enter the date in number </p>
+            <input type="text" class="password-input" id="passwordInput" placeholder="Enter The Date"  pattern="[0-9]*" inputmode="numeric">
+            <button class="password-button">Enter</button>
+            <p class="password-error" id="passwordError">Incorrect date. Please try again!</p>
+        </div>
+    </div>
+    <!-- Video Intro Overlay -->
+    <div id="videoIntroOverlay" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:10001;background:#000;display:none;align-items:center;justify-content:center;flex-direction:column;">
+        <video id="introVideo" src="media/intro-vid.mp4" style="width:100vw;height:100vh;object-fit:cover;position:absolute;top:0;left:0;" autoplay playsinline></video>
+        <div style="     font-style: italic;
+    font-weight: bold;
+    letter-spacing: 1px; position:relative;z-index:2;text-align:center;color:#fff;font-size:2em;font-family:'Dancing Script',cursive;text-shadow:0 2px 16px #000,0 0 8px #ff4b6e;max-width:90vw;margin:0 auto;top:45vh;">
+            Every story has a beginning.<br>Ours is special.
+        </div>
+        <button id="skipIntroBtn" style="position:relative;z-index:2;margin-top:60vh;background:rgba(255,75,110,0.9);color:#fff;font-size:1.1em;padding:12px 32px;border:none;border-radius:24px;cursor:pointer;box-shadow:0 2px 8px #000;">Skip</button>
+    </div>
+    <!-- Main Content Wrapper -->
+    <div class="main-content" id="mainContent">
+        <div class="scroll-progress"></div>
+        <nav class="nav-menu">
+            <a href="#home" class="nav-btn">Home</a>
+            <a href="#together-section" class="nav-btn">Together</a>
+            <a href="#gallery-section" class="nav-btn">Gallery</a>
+            <a href="#video-section" class="nav-btn">Videos</a>
+            <a href="#text-section" class="nav-btn">Love</a>
+            <a href="#cake-section" class="nav-btn">Cake</a>
+        </nav>
+        <section id="home" class="section-transition">
+            <div class="elements-container" id="elementsContainer"></div>
+            <div class="container">
+                <div class="home-content">
+                    <h1 class="birthday-title" id="birthdayTitle"></h1>
+                </div>
+            </div>
+        </section>
+        <section id="together-section" class="section-transition">
+            <div class="timer-card">
+                <div class="timer-question">How long have we been together?</div>
+                        <img src="media/first.jpg" alt="Together" class="timer-image">
+                        <div class="timer-container">
+                            <div class="timer-unit">
+                                <div class="timer-number" id="months">0</div>
+                                <div class="timer-label">Months</div>
+                            </div>
+                            <div class="timer-unit">
+                                <div class="timer-number" id="days">0</div>
+                                <div class="timer-label">Days</div>
+                            </div>
+                            <div class="timer-unit">
+                                <div class="timer-number" id="hours">0</div>
+                                <div class="timer-label">Hours</div>
+                            </div>
+                            <div class="timer-unit">
+                                <div class="timer-number" id="minutes">0</div>
+                                <div class="timer-label">Minutes</div>
+                            </div>
+                            <div class="timer-unit">
+                                <div class="timer-number" id="seconds">0</div>
+                                <div class="timer-label">Seconds</div>
+                            </div>
+                        </div>
+                <div class="timer-start-date">Since March 20, 2025 </div>
+                <div class="timer-start-date">"It's actually my age"</div>
+                    </div>
+        </section>
+        <section id="gallery-section" class="section-transition">
+            <div class="netflix-hero">
+                <img class="hero-img" id="heroImg" src="media/first.jpg" alt="Featured">
+                <div class="hero-overlay">
+                    <div class="hero-label">SERIES</div>
+                    <div class="hero-title" id="heroTitle">FREAKING CRAZY IN LOVE</div>
+                    <div class="hero-desc" id="heroDesc">
+                        We started as partners in crime, and ended up partners in everything, our love won. Watch out world, two absolute loveheads coming through.
+                </div>
+                    <button class="hero-btn" id="heroBtn">More info</button>
+                </div>
+            </div>
+            <div class="netflix-row">
+                <button class="netflix-scroll-arrow left" id="scrollLeft" aria-label="Scroll left">&#10094;</button>
+                <div class="netflix-thumbnails" id="thumbnailsRow">
+                    <!-- Thumbnails will be inserted here -->
+                </div>
+                <button class="netflix-scroll-arrow right" id="scrollRight" aria-label="Scroll right">&#10095;</button>
+            </div>
+            <div class="netflix-lightbox" id="netflixLightbox">
+                <span class="netflix-lightbox-close" id="lightboxClose">&times;</span>
+                <button class="netflix-lightbox-arrow left" id="lightboxPrev">&#10094;</button>
+                <img src="" alt="Large Preview" class="netflix-lightbox-img" id="lightboxImg">
+                <button class="netflix-lightbox-arrow right" id="lightboxNext">&#10095;</button>
+            </div>
+        </section>
+        <section id="video-section" class="section-transition">
+            <video class="disney-bg-blur" id="disneyBgBlur" src="media/intro-vid.mp4" autoplay muted loop playsinline></video>
+            <div class="disney-spotlight">
+                <div class="spotlight-card">
+                    <video id="spotlightVideo" src="media/intro-vid.mp4" muted playsinline></video>
+                    <button class="spotlight-play-btn" id="spotlightPlayBtn">&#9658;</button>
+    </div>
+                <div class="spotlight-info">
+                    <div class="spotlight-title" id="spotlightTitle">A Beautiful Memory</div>
+                    <div class="spotlight-desc" id="spotlightDesc">Relive the most wonderful moments together. Click a video</div>
+        </div>
+    </div>
+            <div class="disney-carousel-row">
+                <div class="disney-carousel" id="disneyCarousel">
+                    <!-- Video thumbnails will be inserted here -->
+        </div>
+    </div>
+        </section>
+        <section id="text-section" class="section-transition">
+            <canvas id="textCanvas"></canvas>
+        </section>
+        <section id="cake-section" class="section-transition">
+            <div class="cake-card">
+                <div class="cake-date">27th August</div>
+                <div class="cake-message">Welcome to my and your special day ya 7yati! Blow the candle to make a wish!</div>
+                <canvas id="cakeCanvas" width="600" height="500" style="width:100%;max-width:340px;display:block;margin:32px auto 0 auto;"></canvas>
+                <button class="cake-btn" id="blowCandleBtn">🎤 Blow the Candle!</button>
+    </div>
+        </section>
+    </div>
+<audio id="background-music" preload="auto">
+        <source src="./media/love.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="background-music-2" preload="auto" style="display:none;">
+        <source src="./media/love.mp3" type="audio/mpeg">
+    </audio>
+    <script>
+        // Password Protection Functions
+        function checkPassword() {
+            const password = document.getElementById('passwordInput').value;
+            const correctPassword = "2032025";
+            if (password === correctPassword) {
+                document.getElementById('passwordOverlay').style.display = 'none';
+                showVideoIntro();
+                setTimeout(() => {
+                    document.getElementById('birthdayTitle').classList.add('visible');
+                    startCelebrationSequence();
+                }, 3000);
+            } else {
+                document.getElementById('passwordError').style.display = 'block';
+            }
+        }
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+        document.getElementById('passwordInput').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+        // Show main content if password overlay is hidden (for direct access)
+        if (document.getElementById('passwordOverlay').style.display === 'none') {
+            document.getElementById('mainContent').classList.add('visible');
+        }
+        // Scroll Progress
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.querySelector('.scroll-progress').style.transform = `scaleX(${scrolled / 100})`;
+        });
+        // Animate title and celebration sequence
+        document.addEventListener('DOMContentLoaded', function() {
+            // setTimeout(() => {
+            //     document.getElementById('birthdayTitle').classList.add('visible');
+            //     startCelebrationSequence();
+            // }, 3000);
+        });
+        function startCelebrationSequence() {
+            const container = document.getElementById('elementsContainer');
+            const title = "Happy Birthday Battoty!";
+                animateTitle(title);
+                createFireworks(container, 0, 20);
+            setTimeout(() => { createHeartsAndFlowers(container); }, 1000);
+            setTimeout(() => { createFireworks(container, 0, 20); }, 4000);
+            setTimeout(() => { createBalloons(container); }, 5000);
+        }
+        function animateTitle(text) {
+            const titleElement = document.getElementById('birthdayTitle');
+            titleElement.innerHTML = '';
+            for (let i = 0; i < text.length; i++) {
+                const letter = document.createElement('span');
+                letter.className = 'title-letter';
+                letter.textContent = text[i];
+                letter.style.animationDelay = `${i * 0.1}s`;
+                titleElement.appendChild(letter);
+            }
+        }
+        function createFireworks(container, startDelay, count) {
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    const firework = document.createElement('div');
+                    firework.className = 'firework';
+                    firework.style.left = Math.random() * 100 + 'vw';
+                    firework.style.top = Math.random() * 100 + 'vh';
+                    firework.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                    container.appendChild(firework);
+                    setTimeout(() => { firework.remove(); }, 1000);
+                }, startDelay + i * 100);
+            }
+        }
+        function createHeartsAndFlowers(container) {
+            const hearts = ['❤️', '💖', '💝', '💕', '💗'];
+            const flowers = ['🌸', '🌹', '💋','💫','⭐'];
+            setInterval(() => {
+                const element = document.createElement('div');
+                element.className = Math.random() > 0.5 ? 'heart' : 'flower';
+                element.textContent = Math.random() > 0.5 ? hearts[Math.floor(Math.random() * hearts.length)] : flowers[Math.floor(Math.random() * flowers.length)];
+                element.style.left = Math.random() * 100 + 'vw';
+                container.appendChild(element);
+                setTimeout(() => { element.remove(); }, 6000);
+            }, 300);
+        }
+        function createBalloons(container) {
+            const balloonTypes = [
+                { emoji: '🎈', color: 'pink', size: 'large' },
+                { emoji: '🎈', color: 'red', size: 'medium' },
+                { emoji: '🎈', color: 'blue', size: 'large' },
+                { emoji: '🎉', color: 'pink', size: 'medium' },
+                { emoji: '🎊', color: 'red', size: 'small' },
+                { emoji: '🎈', color: 'blue', size: 'medium' }
+            ];
+            setInterval(() => {
+                const balloonType = balloonTypes[Math.floor(Math.random() * balloonTypes.length)];
+                const balloon = document.createElement('div');
+                balloon.className = `balloon ${balloonType.color} ${balloonType.size}`;
+                balloon.textContent = balloonType.emoji;
+                balloon.style.left = Math.random() * 100 + 'vw';
+                balloon.style.bottom = '-50px';
+                balloon.style.animationDuration = (Math.random() * 2 + 5) + 's';
+                container.appendChild(balloon);
+                setTimeout(() => { balloon.remove(); }, 7000);
+            }, 300);
+        }
+        function createMeteors(container) {
+            function createMeteor() {
+                const meteor = document.createElement('div');
+                meteor.className = 'meteor';
+                // Start from top-left with some random variation
+                meteor.style.top = Math.random() * 20 + 'vh';
+                meteor.style.left = Math.random() * 20 + 'vw';
+                // Random animation duration
+                meteor.style.animationDuration = (Math.random() * 1 + 1.5) + 's';
+                container.appendChild(meteor);
+                // Remove meteor after animation
+                setTimeout(() => {
+                    meteor.remove();
+                }, 2500);
+            }
+            // Create initial meteors from top-left
+            for (let i = 0; i < 8; i++) {
+                setTimeout(() => {
+                    createMeteor();
+                }, i * 150);
+            }
+            // Continue creating meteors from top-left
+            setInterval(() => {
+                createMeteor();
+            }, 800);
+        }
+        // Timer logic for Together section
+        function updateTogetherTimer() {
+            const startDate = new Date(2025, 2, 19, 0, 0, 0); // March is month 2 (0-based)
+            const now = new Date();
+            let years = now.getFullYear() - startDate.getFullYear();
+            let months = now.getMonth() - startDate.getMonth();
+            let days = now.getDate() - startDate.getDate();
+            let hours = now.getHours() - startDate.getHours();
+            let minutes = now.getMinutes() - startDate.getMinutes();
+            let seconds = now.getSeconds() - startDate.getSeconds();
+            if (seconds < 0) { seconds += 60; minutes--; }
+            if (minutes < 0) { minutes += 60; hours--; }
+            if (hours < 0) { hours += 24; days--; }
+            if (days < 0) {
+                const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+                days += prevMonth.getDate();
+                months--;
+            }
+            if (months < 0) { months += 12; years--; }
+            if (document.getElementById('years')) document.getElementById('years').textContent = years;
+            if (document.getElementById('months')) document.getElementById('months').textContent = months;
+            if (document.getElementById('days')) document.getElementById('days').textContent = days;
+            if (document.getElementById('hours')) document.getElementById('hours').textContent = hours;
+            if (document.getElementById('minutes')) document.getElementById('minutes').textContent = minutes;
+            if (document.getElementById('seconds')) document.getElementById('seconds').textContent = seconds;
+        }
+        setInterval(updateTogetherTimer, 1000);
+        updateTogetherTimer();
+        // Intersection Observer to toggle celebration effects based on section in view
+        const elementsContainer = document.getElementById('elementsContainer');
+        const homeSection = document.getElementById('home');
+        const togetherSection = document.getElementById('together-section');
+
+        const observer = new window.IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.target === homeSection) {
+                    if (entry.isIntersecting) {
+                        elementsContainer.style.display = '';
+                    } else {
+                        elementsContainer.style.display = 'none';
+                    }
+                }
+            });
+        }, { threshold: 0.3 });
+
+        observer.observe(homeSection);
+        // Netflix Gallery logic
+        const galleryImages = ["media/first.jpg", "media/second.jpg","media/third.jpg","media/forth.jpg","media/fifth.JPG","media/hands2.png","media/sixth.JPG","media/eyes.jpg","media/7th.png","media/hands1.png","media/8th.png","media/9th.png","media/hands3.png"]
+            
+        const thumbnailsRow = document.getElementById('thumbnailsRow');
+        let currentHero = 0;
+        galleryImages.forEach((src, i) => {
+            const div = document.createElement('div');
+            div.className = 'netflix-thumb';
+            div.innerHTML = `<img src="${src}" alt="Photo ${i+1}"><div class="thumb-overlay"><div class="thumb-title">Photo ${i+1}</div></div>`;
+            div.onclick = () => setHero(i, true);
+            thumbnailsRow.appendChild(div);
+        });
+        function setHero(i, animate) {
+            const heroImg = document.getElementById('heroImg');
+            const heroTitle = document.getElementById('heroTitle');
+            const heroDesc = document.getElementById('heroDesc');
+            heroImg.src = galleryImages[i];
+            heroTitle.textContent = `Photo ${i+1}`;
+            heroDesc.textContent = `Our special memory together. Click the images `;
+            currentHero = i;
+            if (animate) {
+                heroImg.style.opacity = 0.2;
+                heroTitle.style.opacity = 0.2;
+                heroDesc.style.opacity = 0.2;
+                setTimeout(() => {
+                    heroImg.style.transition = 'opacity 0.5s';
+                    heroTitle.style.transition = 'opacity 0.5s';
+                    heroDesc.style.transition = 'opacity 0.5s';
+                    heroImg.style.opacity = 1;
+                    heroTitle.style.opacity = 1;
+                    heroDesc.style.opacity = 1;
+                }, 50);
+            }
+        }
+        // Scroll arrows
+        const scrollLeft = document.getElementById('scrollLeft');
+        const scrollRight = document.getElementById('scrollRight');
+        scrollLeft.onclick = () => {
+            thumbnailsRow.scrollBy({ left: -300, behavior: 'smooth' });
+        };
+        scrollRight.onclick = () => {
+            thumbnailsRow.scrollBy({ left: 300, behavior: 'smooth' });
+        };
+        // Lightbox logic
+        const netflixLightbox = document.getElementById('netflixLightbox');
+        const lightboxImg = document.getElementById('lightboxImg');
+        const lightboxClose = document.getElementById('lightboxClose');
+        const lightboxPrev = document.getElementById('lightboxPrev');
+        const lightboxNext = document.getElementById('lightboxNext');
+        function openLightbox(i) {
+            lightboxImg.src = galleryImages[i];
+            netflixLightbox.classList.add('active');
+            lightboxImg.style.opacity = 0.2;
+            setTimeout(() => { lightboxImg.style.transition = 'opacity 0.5s'; lightboxImg.style.opacity = 1; }, 50);
+            currentHero = i;
+        }
+        lightboxClose.onclick = () => netflixLightbox.classList.remove('active');
+        lightboxPrev.onclick = (e) => { e.stopPropagation(); openLightbox((currentHero - 1 + galleryImages.length) % galleryImages.length); };
+        lightboxNext.onclick = (e) => { e.stopPropagation(); openLightbox((currentHero + 1) % galleryImages.length); };
+        lightboxImg.onclick = (e) => { e.stopPropagation(); };
+        document.getElementById('heroImg').onclick = () => openLightbox(currentHero);
+        document.querySelectorAll('.netflix-thumb').forEach((thumb, i) => {
+            thumb.addEventListener('dblclick', () => openLightbox(i));
+        });
+        // Disney+ Video Section logic
+        const disneyVideos = [
+            "media/video2.mp4","media/intro-vid.mp4"
+        ];
+        const disneyCarousel = document.getElementById('disneyCarousel');
+        let currentSpotlight = 0;
+        disneyVideos.forEach((src, i) => {
+            const div = document.createElement('div');
+            div.className = 'disney-thumb';
+            div.innerHTML = `<video src="${src}" muted playsinline preload="metadata"></video><div class="thumb-overlay"><div class="thumb-title">Video ${i+1}</div></div>`;
+            div.onclick = () => setSpotlight(i, true);
+            disneyCarousel.appendChild(div);
+        });
+        function setSpotlight(i, animate) {
+            const spotlightVideo = document.getElementById('spotlightVideo');
+            const spotlightTitle = document.getElementById('spotlightTitle');
+            const spotlightDesc = document.getElementById('spotlightDesc');
+            const disneyBgBlur = document.getElementById('disneyBgBlur');
+            spotlightVideo.src = disneyVideos[i];
+            spotlightVideo.currentTime = 0;
+            spotlightVideo.play();
+            spotlightTitle.textContent = `Video ${i+1}`;
+            spotlightDesc.textContent = `My beautiful moment together. Click a video below to highlight it!`;
+            disneyBgBlur.src = disneyVideos[i];
+            currentSpotlight = i;
+            if (animate) {
+                spotlightVideo.style.opacity = 0.2;
+                spotlightTitle.style.opacity = 0.2;
+                spotlightDesc.style.opacity = 0.2;
+                setTimeout(() => {
+                    spotlightVideo.style.transition = 'opacity 0.5s';
+                    spotlightTitle.style.transition = 'opacity 0.5s';
+                    spotlightDesc.style.transition = 'opacity 0.5s';
+                    spotlightVideo.style.opacity = 1;
+                    spotlightTitle.style.opacity = 1;
+                    spotlightDesc.style.opacity = 1;
+                }, 50);
+            }
+        }
+        document.getElementById('spotlightPlayBtn').onclick = () => {
+            const spotlightVideo = document.getElementById('spotlightVideo');
+            const backgroundMusic = document.getElementById('background-music');
+            
+            // Ensure background music keeps playing
+            if (backgroundMusic.paused) {
+                backgroundMusic.play();
+            }
+            
+            // Request fullscreen
+            if (spotlightVideo.requestFullscreen) spotlightVideo.requestFullscreen();
+            else if (spotlightVideo.webkitRequestFullscreen) spotlightVideo.webkitRequestFullscreen();
+            else if (spotlightVideo.msRequestFullscreen) spotlightVideo.msRequestFullscreen();
+            
+            // Play video without affecting background music
+            spotlightVideo.muted = false;
+            spotlightVideo.play().catch(e => console.log('Video play error:', e));
+        };
+
+        // Handle fullscreen changes
+        function handleFullscreenChange() {
+            const backgroundMusic = document.getElementById('background-music');
+            const spotlightVideo = document.getElementById('spotlightVideo');
+            
+            // Always ensure background music is playing
+            if (backgroundMusic.paused) {
+                backgroundMusic.play().catch(e => console.log('Music play error:', e));
+            }
+            
+            // Handle video state
+            if (!document.fullscreenElement && 
+                !document.webkitFullscreenElement && 
+                !document.mozFullScreenElement && 
+                !document.msFullscreenElement) {
+                // Exiting fullscreen
+                spotlightVideo.muted = true;
+                spotlightVideo.pause();
+            }
+        }
+
+        // Add fullscreen change event listeners
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+        document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+        document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+        // Text Animation Section
+        function initTextAnimation() {
+            const canvas = document.getElementById('textCanvas');
+            const ctx = canvas.getContext('2d');
+            let w = window.innerWidth;
+            let h = window.innerHeight;
+            canvas.width = w;
+            canvas.height = h;
+
+            // Heart properties
+            const heartColors = [
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(255, 99, 132, 0.5)',
+                'rgba(255, 0, 80, 0.6)',
+                'rgba(255, 0, 120, 0.4)',
+                'rgba(255, 153, 204, 0.5)',
+                'rgba(255, 51, 102, 0.6)',
+                'rgba(255, 102, 178, 0.5)'
+            ];
+            const hearts = [];
+            const maxHearts = 200;
+
+            function drawHeart(x, y, size, color, alpha) {
+                ctx.save();
+                ctx.globalAlpha = alpha;
+                ctx.beginPath();
+                ctx.moveTo(x, y + size / 4);
+                ctx.bezierCurveTo(x, y, x - size / 2, y, x - size / 2, y + size / 4);
+                ctx.bezierCurveTo(x - size / 2, y + size / 2, x, y + size / 1.2, x, y + size);
+                ctx.bezierCurveTo(x, y + size / 1.2, x + size / 2, y + size / 2, x + size / 2, y + size / 4);
+                ctx.bezierCurveTo(x + size / 2, y, x, y, x, y + size / 4);
+                ctx.closePath();
+                ctx.fillStyle = color;
+                ctx.fill();
+                ctx.restore();
+            }
+
+            function spawnHeart() {
+                const size = Math.random() * 40 + 20;
+                const x = Math.random() * w;
+                const y = h + size;
+                const speed = Math.random() * 0.7 + 0.3;
+                const color = heartColors[Math.floor(Math.random() * heartColors.length)];
+                const alpha = Math.random() * 0.5 + 0.5;
+                hearts.push({ x, y, size, speed, color, alpha });
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, w, h);
+                // Draw hearts
+                for (let i = 0; i < hearts.length; i++) {
+                    const heart = hearts[i];
+                    drawHeart(heart.x, heart.y, heart.size, heart.color, heart.alpha);
+                    heart.y -= heart.speed;
+                    heart.x += Math.sin(heart.y / 40) * 0.7; // gentle horizontal drift
+                    if (heart.y < -heart.size) {
+                        hearts.splice(i, 1);
+                        i--;
+                    }
+                }
+                // Add more hearts if needed
+                while (hearts.length < maxHearts) {
+                    spawnHeart();
+                }
+                // Draw centered text
+                ctx.save();
+                ctx.font = 'bold 28px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = '#fff';
+                const lines = [
+                    "Somewhere,",
+                    "between laughter and secrets",
+                    " I found myself falling for you.",
+                    "the longer I'm with you",
+                    "the more I love you",
+                    "bmot fiki♥️"
+                    
+                ];
+                for (let i = 0; i < lines.length; i++) {
+                    ctx.fillText(lines[i], w / 2, h / 2 + i * 36 - 18);
+                }
+                ctx.restore();
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                w = window.innerWidth;
+                h = window.innerHeight;
+                canvas.width = w;
+                canvas.height = h;
+            });
+        }
+        
+        // Initialize text animation when the section is visible
+        const textSection = document.getElementById('text-section');
+        const textObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    initTextAnimation();
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        textObserver.observe(textSection);
+
+        document.querySelector('.password-button').addEventListener('click', checkPassword);
+
+        // Cake Section Animation with blow-out
+        let candleBlown = false;
+        function drawCake() {
+            const canvas = document.getElementById('cakeCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+            ctx.clearRect(0, 0, w, h);
+
+            // Draw plate
+            ctx.save();
+            ctx.beginPath();
+            ctx.ellipse(w/2, h*0.78, 140, 22, 0, 0, 2*Math.PI);
+            ctx.fillStyle = '#eee';
+            ctx.shadowColor = '#bbb';
+            ctx.shadowBlur = 8;
+            ctx.fill();
+            ctx.restore();
+
+            // Draw cake body (cylinder with 3 layers)
+            const cakeTopY = h*0.6;
+            const cakeHeight = 100;
+            const cakeRadiusX = 120;
+            const cakeRadiusY = 40;
+            // Side
+            ctx.save();
+            ctx.beginPath();
+            ctx.ellipse(w/2, cakeTopY, cakeRadiusX, cakeRadiusY, 0, 0, Math.PI*2);
+            ctx.rect(w/2-cakeRadiusX, cakeTopY, cakeRadiusX*2, cakeHeight);
+            ctx.ellipse(w/2, cakeTopY+cakeHeight, cakeRadiusX, cakeRadiusY, 0, 0, Math.PI*2);
+            ctx.clip();
+            // Gradient for side
+            const grad = ctx.createLinearGradient(w/2-cakeRadiusX, cakeTopY, w/2+cakeRadiusX, cakeTopY+cakeHeight);
+            grad.addColorStop(0, '#6b3e26');
+            grad.addColorStop(0.5, '#8d5524');
+            grad.addColorStop(1, '#4b2a13');
+            ctx.fillStyle = grad;
+            ctx.fillRect(w/2-cakeRadiusX, cakeTopY, cakeRadiusX*2, cakeHeight);
+            ctx.restore();
+            // Top ellipse
+            ctx.save();
+            ctx.beginPath();
+            ctx.ellipse(w/2, cakeTopY, cakeRadiusX, cakeRadiusY, 0, 0, Math.PI*2);
+            ctx.fillStyle = '#8d5524';
+            ctx.fill();
+            ctx.restore();
+            // Layer lines
+            ctx.save();
+            ctx.strokeStyle = '#fff6e6';
+            ctx.lineWidth = 3;
+            for (let i = 1; i < 3; i++) {
+                ctx.beginPath();
+                ctx.ellipse(w/2, cakeTopY + (cakeHeight/3)*i, cakeRadiusX, cakeRadiusY, 0, 0, Math.PI*2);
+                ctx.stroke();
+            }
+            ctx.restore();
+
+            // Draw icing (drip effect)
+            ctx.save();
+            ctx.beginPath();
+            ctx.ellipse(w/2, cakeTopY-16, 110, 32, 0, 0, 2*Math.PI);
+            ctx.moveTo(w/2-60, cakeTopY-16);
+            ctx.bezierCurveTo(w/2-80, cakeTopY+4, w/2-40, cakeTopY+24, w/2-20, cakeTopY+4);
+            ctx.bezierCurveTo(w/2-10, cakeTopY+24, w/2+10, cakeTopY+4, w/2+20, cakeTopY+14);
+            ctx.bezierCurveTo(w/2+60, cakeTopY-6, w/2+80, cakeTopY-6, w/2+70, cakeTopY-16);
+            ctx.closePath();
+            ctx.fillStyle = '#fff6e6';
+            ctx.shadowColor = '#fff6e6';
+            ctx.shadowBlur = 10;
+            ctx.fill();
+            ctx.restore();
+
+            // Draw candle
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(w/2-10, cakeTopY-63, 20, 60);
+            ctx.fillStyle = '#b22234';
+            ctx.shadowColor = '#b22234';
+            ctx.shadowBlur = 0;
+            ctx.fill();
+            ctx.restore();
+
+            // Draw candle top
+            ctx.save();
+            ctx.beginPath();
+            ctx.ellipse(w/2, cakeTopY-63, 10, 5, 0, 0, 2*Math.PI);
+            ctx.fillStyle = '#b22234';
+            ctx.fill();
+            ctx.restore();
+
+            // Draw flame (animated, unless blown out)
+            if (!candleBlown) {
+                const time = Date.now() / 300;
+                const flameY = cakeTopY-75 + Math.sin(time)*3;
+                ctx.save();
+                ctx.beginPath();
+                ctx.ellipse(w/2, flameY, 12, 22, 0, 0, 2*Math.PI);
+                ctx.fillStyle = 'rgba(255, 200, 40, 0.85)';
+                ctx.shadowColor = 'rgba(255, 200, 40, 0.7)';
+                ctx.shadowBlur = 25;
+                ctx.fill();
+                ctx.restore();
+                ctx.save();
+                ctx.beginPath();
+                ctx.ellipse(w/2, flameY, 6, 12, 0, 0, 2*Math.PI);
+                ctx.fillStyle = 'rgba(255, 255, 120, 0.9)';
+                ctx.shadowColor = 'rgba(255, 255, 120, 0.7)';
+                ctx.shadowBlur = 10;
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+        // Animate cake when section is visible
+        const cakeSection = document.getElementById('cake-section');
+        if (cakeSection) {
+            const cakeObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        function animateCake() {
+                            drawCake();
+                            requestAnimationFrame(animateCake);
+                        }
+                        animateCake();
+                    }
+                });
+            }, { threshold: 0.3 });
+            cakeObserver.observe(cakeSection);
+        }
+        // Blow candle button logic
+        const blowBtn = document.getElementById('blowCandleBtn');
+        let audioContext, micStream, analyser, dataArray, blowingActive = false;
+        if (blowBtn) {
+            blowBtn.addEventListener('click', async function() {
+                if (candleBlown) return;
+                // Ask for microphone access
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                try {
+                    micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                } catch (e) {
+                    alert('Microphone access denied. Please allow microphone to blow the candle!');
+                    return;
+                }
+                analyser = audioContext.createAnalyser();
+                const micSource = audioContext.createMediaStreamSource(micStream);
+                micSource.connect(analyser);
+                analyser.fftSize = 2048;
+                dataArray = new Uint8Array(analyser.fftSize);
+                blowingActive = true;
+                blowBtn.textContent = 'Listening... Blow! 🎤';
+                detectBlow();
+            });
+        }
+
+        function detectBlow() {
+            if (!blowingActive || candleBlown) return;
+            analyser.getByteTimeDomainData(dataArray);
+            // Calculate volume (RMS)
+            let sum = 0;
+            for (let i = 0; i < dataArray.length; i++) {
+                let val = (dataArray[i] - 128) / 128;
+                sum += val * val;
+            }
+            let rms = Math.sqrt(sum / dataArray.length);
+            // If volume is above threshold, consider it a blow
+            if (rms > 0.12) { // Adjust threshold as needed
+                candleBlown = true;
+                blowingActive = false;
+                blowBtn.textContent = 'Candle Blown! 🎉';
+                if (micStream) {
+                    micStream.getTracks().forEach(track => track.stop());
+                }
+                return;
+            }
+            requestAnimationFrame(detectBlow);
+        }
+
+        // Video Intro Overlay logic
+        function showVideoIntro() {
+            const overlay = document.getElementById('videoIntroOverlay');
+            const mainContent = document.getElementById('mainContent');
+            overlay.style.display = 'flex';
+            mainContent.classList.remove('visible');
+            const video = document.getElementById('introVideo');
+            video.currentTime = 0;
+            video.play();
+            // Fade out after video ends
+            video.onended = hideVideoIntro;
+            // Skip button
+            document.getElementById('skipIntroBtn').onclick = hideVideoIntro;
+        }
+        function hideVideoIntro() {
+            const overlay = document.getElementById('videoIntroOverlay');
+            const mainContent = document.getElementById('mainContent');
+            const video = document.getElementById('introVideo');
+            if (video) {
+                video.pause();
+                video.currentTime = 0;
+            }
+            // Start background music
+            const audio = document.getElementById('background-music');
+            const audio2 = document.getElementById('background-music-2');
+            if (audio && audio2) {
+                audio.currentTime = 0;
+                audio.play();
+                audio.onended = function() {
+                    audio2.currentTime = 0;
+                    audio2.play();
+                };
+            }
+            overlay.style.transition = 'opacity 0.7s';
+            overlay.style.opacity = 0;
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                overlay.style.opacity = 1;
+                mainContent.classList.add('visible');
+            }, 700);
+        }
+    </script>
+</body>
+</html> 
